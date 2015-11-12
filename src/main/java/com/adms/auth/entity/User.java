@@ -70,87 +70,98 @@ public class User extends BaseAuditDomain {
 		return id;
 	}
 
-	public void setId(Long id) {
+	public User setId(Long id) {
 		this.id = id;
+		return this;
 	}
 
 	public String getUsername() {
 		return username;
 	}
 
-	public void setUsername(String username) {
+	public User setUsername(String username) {
 		this.username = username;
+		return this;
 	}
 
 	public String getPwd() {
 		return pwd;
 	}
 
-	public void setPwd(String pwd) {
+	public User setPwd(String pwd) {
 		this.pwd = pwd;
+		return this;
 	}
 
 	public String getLastPwd() {
 		return lastPwd;
 	}
 
-	public void setLastPwd(String lastPwd) {
+	public User setLastPwd(String lastPwd) {
 		this.lastPwd = lastPwd;
+		return this;
 	}
 
 	public String getEmail() {
 		return email;
 	}
 
-	public void setEmail(String email) {
+	public User setEmail(String email) {
 		this.email = email;
+		return this;
 	}
 
 	public Date getLastLogin() {
 		return lastLogin;
 	}
 
-	public void setLastLogin(Date lastLogin) {
+	public User setLastLogin(Date lastLogin) {
 		this.lastLogin = lastLogin;
+		return this;
 	}
 
 	public Date getPwdExpireDate() {
 		return pwdExpireDate;
 	}
 
-	public void setPwdExpireDate(Date pwdExpireDate) {
+	public User setPwdExpireDate(Date pwdExpireDate) {
 		this.pwdExpireDate = pwdExpireDate;
+		return this;
 	}
 
 	public String getForceChangePwd() {
 		return forceChangePwd;
 	}
 
-	public void setForceChangePwd(String forceChangePwd) {
+	public User setForceChangePwd(String forceChangePwd) {
 		this.forceChangePwd = forceChangePwd;
+		return this;
 	}
 
 	public String getActive() {
 		return active;
 	}
 
-	public void setActive(String active) {
+	public User setActive(String active) {
 		this.active = active;
+		return this;
 	}
 
 	public Integer getFailAttemp() {
 		return failAttemp;
 	}
 
-	public void setFailAttemp(Integer failAttemp) {
+	public User setFailAttemp(Integer failAttemp) {
 		this.failAttemp = failAttemp;
+		return this;
 	}
 
 	public List<UserRole> getUserRoles() {
 		return userRoles;
 	}
 
-	public void setUserRoles(List<UserRole> userRoles) {
+	public User setUserRoles(List<UserRole> userRoles) {
 		this.userRoles = userRoles;
+		return this;
 	}
 }

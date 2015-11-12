@@ -5,6 +5,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.HeaderParam;
@@ -80,7 +81,7 @@ public class AuthWS {
 						List<String> privileges = null;
 						
 						//Filter only active role
-//						userRoles = userRoles.stream().filter(ur -> ur.getActive().equals("Y")).collect(Collectors.toList());
+						userRoles = userRoles.stream().filter(ur -> ur.getActive().equals("Y")).collect(Collectors.toList());
 						
 						for(UserRole userRole : userRoles) {
 							Role role = userRole.getRole();
@@ -111,12 +112,51 @@ public class AuthWS {
 		
 		return null;
 	}
+
+	@GET
+	@Path("/chgpwd")
+	@Produces(MediaType.APPLICATION_JSON)
+	public String changePwd(@HeaderParam("val") String val) {
+		Gson gson = new Gson();
+		UserLogin userLogin = null;
+		
+		try {
+			userLogin = gson.fromJson(val, UserLogin.class);
+			User user = getUser(userLogin.getUsername());
+			
+			if(user == null) {
+				userLogin.loginSuccess(Boolean.FALSE);
+			} else {
+				Date currDate = new Date();
+				user.setLastLogin(currDate);
+				
+				if(user.getPwd().equals(userLogin.getPwd())) {
+					//OK, changing password
+					user.setLastPwd(user.getPwd());
+					user.setPwd(userLogin.getNewPwd());
+				} else {
+					//wrong password
+					user.setFailAttemp(user.getFailAttemp() + 1);
+					userLogin.loginSuccess(Boolean.FALSE);
+				}
+				userService.update(user, "Auth Service");
+			}
+
+			//Clear password in object before send Object back
+			return gson.toJson(userLogin.pwd(null).setNewPwd(null));
+			
+		} catch(Exception e) {
+			e.printStackTrace();
+		}
+
+		return gson.toJson(null);
+	}
 	
 	private User getUser(String username) {
 		User user = null;
 		
 		try {
-			List<User> list = userService.find(new User(username));
+			List<User> list = userService.find(new User(username).setActive("Y"));
 			if(!list.isEmpty()) {
 				user = list.get(0);
 			}
