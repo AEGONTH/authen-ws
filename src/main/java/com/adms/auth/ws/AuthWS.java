@@ -34,6 +34,8 @@ import com.google.gson.Gson;
 @Path("/authservice")
 public class AuthWS {
 	
+	private final String USER_ACTION = "Auth Service";
+	
 	@Autowired
 	private UserService userService;
 	
@@ -54,12 +56,12 @@ public class AuthWS {
 	@GET
 	@Path("/auth")
 	@Produces(MediaType.APPLICATION_JSON)
-	public String auth(@HeaderParam("val") String val) {
+	public String auth(@HeaderParam("val") String gsonObject) {
 		Gson gson = new Gson();
 		UserLogin userLogin = null;
 		
 		try {
-			userLogin = gson.fromJson(val, UserLogin.class);
+			userLogin = gson.fromJson(gsonObject, UserLogin.class);
 			User user = getUser(userLogin.getUsername());
 			
 			if(user == null) {
@@ -100,7 +102,7 @@ public class AuthWS {
 					user.setFailAttemp(user.getFailAttemp() + 1);
 					userLogin.loginSuccess(Boolean.FALSE);
 				}
-				userService.update(user, "Auth Service");
+				userService.update(user, USER_ACTION);
 			}
 			
 			//Clear password in object before send Object back
@@ -116,12 +118,12 @@ public class AuthWS {
 	@GET
 	@Path("/chgpwd")
 	@Produces(MediaType.APPLICATION_JSON)
-	public String changePwd(@HeaderParam("val") String val) {
+	public String changePwd(@HeaderParam("val") String gsonObject) {
 		Gson gson = new Gson();
 		UserLogin userLogin = null;
 		
 		try {
-			userLogin = gson.fromJson(val, UserLogin.class);
+			userLogin = gson.fromJson(gsonObject, UserLogin.class);
 			User user = getUser(userLogin.getUsername());
 			
 			if(user == null) {
@@ -132,14 +134,16 @@ public class AuthWS {
 				
 				if(user.getPwd().equals(userLogin.getPwd())) {
 					//OK, changing password
-					user.setLastPwd(user.getPwd());
-					user.setPwd(userLogin.getNewPwd());
+					user.setLastPwd(user.getPwd())
+						.setPwd(userLogin.getNewPwd())
+						.setLastLogin(new Date());
+					userLogin.loginSuccess(Boolean.TRUE);
 				} else {
 					//wrong password
 					user.setFailAttemp(user.getFailAttemp() + 1);
 					userLogin.loginSuccess(Boolean.FALSE);
 				}
-				userService.update(user, "Auth Service");
+				userService.update(user, USER_ACTION);
 			}
 
 			//Clear password in object before send Object back
